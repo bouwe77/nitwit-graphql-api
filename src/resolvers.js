@@ -1,35 +1,30 @@
 import jwt from "jsonwebtoken";
-import { getUsers, getUser, createUser, authenticateUser } from "./users";
+import { createSignedToken } from "./jwt";
 
 export const resolvers = {
   Query: {
-    users: async (parent, { limit }) => {
+    users: async (_, { limit }, { users: { getUsers } }) => {
       return await getUsers(limit);
     },
-    user: async (parent, { username }) => {
+    user: async (_, { username }, { users: { getUser } }) => {
       return await getUser(username);
+    },
+    me: async (_, args, { users: { getMe } }) => {
+      return await getMe();
     },
   },
   Mutation: {
-    register: async (parent, { username, password }) => {
+    register: async (_, { username, password }, { users: { createUser } }) => {
       const createdUser = await createUser({ username, password });
       return createdUser;
     },
-    login: async (parent, { username, password }, context) => {
+    login: async (
+      _,
+      { username, password },
+      { users: { authenticateUser }, createSignedToken }
+    ) => {
       const user = await authenticateUser(username, password);
-      if (!user) throw new Error("Unauthenticated");
-
-      const token = jwt.sign(
-        {
-          user: { username: user.username },
-        },
-        context.secret,
-        {
-          expiresIn: "1y",
-        }
-      );
-
-      return token;
+      return createSignedToken(user);
     },
   },
 };

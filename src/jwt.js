@@ -16,3 +16,17 @@ export function getUserFromToken(headers, secret) {
 
   return decoded.user;
 }
+
+export function createSignedToken(user, secret) {
+  if (!user) throw new Error("Unauthenticated");
+
+  return jwt.sign(
+    {
+      user: { username: user.username },
+    },
+    secret,
+    {
+      expiresIn: "1y",
+    }
+  );
+}

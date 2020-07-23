@@ -3,16 +3,12 @@ require("dotenv").config();
 
 import { typeDefs } from "./schema";
 import { resolvers } from "./resolvers";
-import { getUserFromToken } from "./jwt";
+import { createContext } from "./context";
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: (req) => {
-    const secret = process.env.SECRET;
-    const user = getUserFromToken(req.req.headers, secret);
-    return { user, secret };
-  },
+  context: (req) => createContext(req),
 });
 
 server.listen({ port: process.env.PORT }).then(({ url }) => {
