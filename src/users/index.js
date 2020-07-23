@@ -1,4 +1,6 @@
 import bcrypt from "bcrypt";
+import validate from "validate.js";
+
 import mapToUserSchema from "./mapping";
 import User from "./model";
 
@@ -35,6 +37,8 @@ async function getUsers(limit) {
 }
 
 async function createUser(user) {
+  validateNewUser(user);
+
   user.username = user.username.toLowerCase();
   user.password = await bcrypt.hash(user.password, 12);
 
@@ -47,6 +51,8 @@ async function deleteAllUsers() {
 }
 
 async function authenticateUser(username, password) {
+  if (!isAuthenticationValid({ username, password })) return false;
+
   const user = await getUser(username, false);
 
   if (!user) return false;
@@ -55,4 +61,31 @@ async function authenticateUser(username, password) {
   if (!valid) return false;
 
   return user;
+}
+
+const userConstraints = {
+  username: {
+    presence: true,
+    length: {
+      minimum: 1,
+      message: "must not be empty",
+    },
+  },
+  password: {
+    presence: true,
+    length: {
+      minimum: 6,
+      message: "must be at least 6 characters",
+    },
+  },
+};
+
+function validateNewUser(user) {
+  const errors = validate(user, userConstraints, { format: "flat" });
+  if (errors) throw new Error(errors.join(", "));
+}
+
+function isAuthenticationValid(user) {
+  const errors = validate(user, userConstraints);
+  return errors ? false : true;
 }

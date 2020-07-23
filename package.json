@@ -18,7 +18,8 @@
     "dotenv": "^8.2.0",
     "graphql": "^15.3.0",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.9.25"
+    "mongoose": "^5.9.25",
+    "validate.js": "^0.13.1"
   },
   "devDependencies": {
     "install": "^0.13.0",

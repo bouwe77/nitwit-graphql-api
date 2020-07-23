@@ -24,7 +24,7 @@ export const resolvers = {
       { users: { authenticateUser }, createSignedToken }
     ) => {
       const user = await authenticateUser(username, password);
-      return createSignedToken(user);
+      return { token: createSignedToken(user) };
     },
   },
 };
