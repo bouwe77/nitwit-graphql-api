@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import validate from "validate.js";
+import { v4 as uuidv4 } from "uuid";
 
 import mapToUserSchema from "./mapping";
 import User from "./model";
@@ -13,10 +14,18 @@ export const createUserFunctions = (user) => ({
   authenticateUser,
 });
 
-async function getUser(username, mapToSchema = true) {
+async function getUser(userId, mapToSchema = true) {
+  if (!userId) throw Error("Please provide a userId");
+
+  const user = await User.findById(userId);
+
+  return mapToSchema ? mapToUserSchema(user) : user;
+}
+
+async function getUserByUsername(username, mapToSchema = true) {
   if (!username) throw Error("Please provide a username");
 
-  const user = await User.findOne({ username: username.toLowerCase() });
+  const user = await User.findOne({ username });
 
   return mapToSchema ? mapToUserSchema(user) : user;
 }
@@ -39,6 +48,7 @@ async function getUsers(limit) {
 async function createUser(user) {
   validateNewUser(user);
 
+  user.id = uuidv4();
   user.username = user.username.toLowerCase();
   user.password = await bcrypt.hash(user.password, 12);
 
@@ -53,7 +63,7 @@ async function deleteAllUsers() {
 async function authenticateUser(username, password) {
   if (!isAuthenticationValid({ username, password })) return false;
 
-  const user = await getUser(username, false);
+  const user = await getUserByUsername(username, false);
 
   if (!user) return false;
 
@@ -86,6 +96,7 @@ function validateNewUser(user) {
 }
 
 function isAuthenticationValid(user) {
+  // Note that (for now) the validation constraints are the same as when registering a new user.
   const errors = validate(user, userConstraints);
   return errors ? false : true;
 }

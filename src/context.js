@@ -1,5 +1,6 @@
 import { getUserFromToken, createSignedToken } from "./jwt";
 import { createUserFunctions } from "./users";
+import { createPostFunctions } from "./posts";
 
 export function createContext(req) {
   const secret = process.env.SECRET;
@@ -8,6 +9,7 @@ export function createContext(req) {
 
   return {
     users: createUserFunctions(user),
+    posts: createPostFunctions(user),
     createSignedToken: (user) => createSignedToken(user, secret),
   };
 }

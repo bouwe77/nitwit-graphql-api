@@ -22,7 +22,7 @@ export function createSignedToken(user, secret) {
 
   return jwt.sign(
     {
-      user: { username: user.username },
+      user: { id: user.id, username: user.username },
     },
     secret,
     {
