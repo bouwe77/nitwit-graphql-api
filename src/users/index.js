@@ -1,6 +1,5 @@
 import bcrypt from "bcrypt";
 import validate from "validate.js";
-import { v4 as uuidv4 } from "uuid";
 
 import mapToUserSchema from "./mapping";
 import User from "./model";
@@ -48,7 +47,6 @@ async function getUsers(limit) {
 async function createUser(user) {
   validateNewUser(user);
 
-  user.id = uuidv4();
   user.username = user.username.toLowerCase();
   user.password = await bcrypt.hash(user.password, 12);
 

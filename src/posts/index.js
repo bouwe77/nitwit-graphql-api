@@ -1,5 +1,4 @@
 import validate from "validate.js";
-import { v4 as uuidv4 } from "uuid";
 
 import mapToPostSchema from "./mapping";
 import Post from "./model";
@@ -31,7 +30,6 @@ async function getTimeline(user, limit) {
 async function createPost(post, user) {
   if (!user) throw new Error("Unauthorized");
 
-  post.id = uuidv4();
   post.authorUserId = user.id;
 
   validateNewPost(post);
