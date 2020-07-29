@@ -15,6 +15,9 @@ export const resolvers = {
     timeline: async (_, { limit }, { posts: { getTimeline } }) => {
       return await getTimeline(limit);
     },
+    posts: async (_, { userId, limit }, { posts: { getPosts } }) => {
+      return await getPosts(userId, limit);
+    },
   },
   User: {
     posts: async (parent, { limit }, { posts: { getPosts } }) => {

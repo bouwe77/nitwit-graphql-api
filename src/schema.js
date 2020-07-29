@@ -13,6 +13,9 @@ export const typeDefs = gql`
 
     "Get the timeline of the currently logged in user."
     timeline: [Post]
+
+    "Get the posts of a user."
+    posts(userId: String!, limit: Int): [Post]
   }
 
   "A User is someone who is registered for the Nitwit app."
