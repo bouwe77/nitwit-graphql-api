@@ -26,10 +26,9 @@ async function createPost(post, user) {
 
   validateNewPost(post);
 
-  const createdPost = await Post.create(post);
+  const followerUserIds = [user.id, "piet", "jan"];
 
-  const timelinePost = { ...post, timelineUserId: user.id };
-  await TimelinePost.create(timelinePost);
+  const createdPost = await createPostInTransaction(post, followerUserIds);
 
   return mapToPostSchema(createdPost);
 }
@@ -54,4 +53,38 @@ function validateNewPost(post) {
 
   const errors = validate(post, postConstraints, { format: "flat" });
   if (errors) throw new Error(errors.join(", "));
+}
+
+async function createPostInTransaction(post, followerUserIds) {
+  const session = await Post.startSession();
+
+  const transactionOptions = {
+    readPreference: "primary",
+    readConcern: { level: "local" },
+    writeConcern: { w: "majority" },
+  };
+
+  let createdPost = null;
+
+  try {
+    const transactionResult = await session.withTransaction(async () => {
+      // Create the post.
+      const createdPosts = await Post.create([post], { session });
+      createdPost = createdPosts[0];
+
+      // Also create the same post on the timelines of the author and all followers.
+      const timelinePosts = followerUserIds.map((userId) => {
+        return { ...post, timelineUserId: userId };
+      });
+      await TimelinePost.create(timelinePosts, { session });
+    }, transactionOptions);
+
+    if (!transactionResult) console.log("Transaction intentionally aborted");
+  } catch (e) {
+    console.error("Transaction aborted due to an unexpected error: " + e);
+  } finally {
+    await session.endSession();
+  }
+
+  return createdPost;
 }

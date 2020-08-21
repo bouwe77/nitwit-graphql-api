@@ -16,6 +16,12 @@ export const typeDefs = gql`
 
     "Get the posts of a user."
     posts(userId: String!, limit: Int): [Post]
+
+    "Get the followers of the given user."
+    followers(userId: String!, limit: Int): [User]
+
+    "Get the users that the given user is following."
+    following(userId: String!, limit: Int): [User]
   }
 
   "A User is someone who is registered for the Nitwit app."
@@ -31,6 +37,12 @@ export const typeDefs = gql`
     text: String!
     authorUserId: String!
     author: User!
+  }
+
+  type Following {
+    id: ID!
+    user: User!
+    followingUser: User!
   }
 
   "A LoginResult is the result that is returned by login when it's successful."
@@ -53,5 +65,8 @@ export const typeDefs = gql`
 
     "Create a new post."
     createPost(data: CreatePostInput!): Post!
+
+    "The logged in user starts following the given user."
+    follow(userId: String!): Following
   }
 `;

@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { createSignedToken } from "./jwt";
+import { async } from "validate.js";
 
 export const resolvers = {
   Query: {
@@ -17,6 +18,20 @@ export const resolvers = {
     },
     posts: async (_, { userId, limit }, { posts: { getPosts } }) => {
       return await getPosts(userId, limit);
+    },
+    followers: async (
+      _,
+      { userId, limit },
+      { following: { getFollowers } }
+    ) => {
+      return await getFollowers(userId, limit);
+    },
+    following: async (
+      _,
+      { userId, limit },
+      { following: { getFollowing } }
+    ) => {
+      return await getFollowing(userId, limit);
     },
   },
   User: {
@@ -43,6 +58,9 @@ export const resolvers = {
     },
     createPost: async (_, { data: post }, { posts: { createPost } }) => {
       return await createPost(post);
+    },
+    follow: async (_, { data: followingUserId }, { following: { follow } }) => {
+      return await follow(user, followingUserId);
     },
   },
 };
