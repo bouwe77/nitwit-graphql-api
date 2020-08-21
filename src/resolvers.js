@@ -12,7 +12,7 @@ export const resolvers = {
     me: async (_, args, { users: { getMe } }) => {
       return await getMe();
     },
-    timeline: async (_, { limit }, { posts: { getTimeline } }) => {
+    timeline: async (_, { limit }, { timeline: { getTimeline } }) => {
       return await getTimeline(limit);
     },
     posts: async (_, { userId, limit }, { posts: { getPosts } }) => {

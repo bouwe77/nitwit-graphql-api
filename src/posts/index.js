@@ -2,10 +2,10 @@ import validate from "validate.js";
 
 import mapToPostSchema from "./mapping";
 import Post from "./model";
+import TimelinePost from "../timeline/model";
 
 export const createPostFunctions = (user) => ({
   getPosts,
-  getTimeline: (limit) => getTimeline(user, limit),
   createPost: (post) => createPost(post, user),
 });
 
@@ -19,14 +19,6 @@ async function getPosts(authorUserId, limit) {
   return posts;
 }
 
-async function getTimeline(user, limit) {
-  if (!user) throw new Error("Unauthorized");
-
-  // For now, return the posts of the user.
-  //TODO Create a timeline collection
-  return await getPosts(user.id, limit);
-}
-
 async function createPost(post, user) {
   if (!user) throw new Error("Unauthorized");
 
@@ -35,6 +27,9 @@ async function createPost(post, user) {
   validateNewPost(post);
 
   const createdPost = await Post.create(post);
+
+  const timelinePost = { ...post, timelineUserId: user.id };
+  await TimelinePost.create(timelinePost);
 
   return mapToPostSchema(createdPost);
 }
