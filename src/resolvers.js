@@ -44,6 +44,14 @@ export const resolvers = {
       return await getUser(parent.authorUserId);
     },
   },
+  Following: {
+    user: async (parent, _, { users: { getUser } }) => {
+      return await getUser(parent.userId);
+    },
+    followingUser: async (parent, _, { users: { getUser } }) => {
+      return await getUser(parent.followingUserId);
+    },
+  },
   Mutation: {
     register: async (_, { username, password }, { users: { createUser } }) => {
       return await createUser({ username, password });
@@ -59,8 +67,12 @@ export const resolvers = {
     createPost: async (_, { data: post }, { posts: { createPost } }) => {
       return await createPost(post);
     },
-    follow: async (_, { data: followingUserId }, { following: { follow } }) => {
-      return await follow(user, followingUserId);
+    follow: async (
+      _,
+      { userId },
+      { following: { createFollowing }, users: { getUser } }
+    ) => {
+      return await createFollowing(userId, getUser);
     },
   },
 };

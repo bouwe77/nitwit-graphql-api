@@ -18,10 +18,10 @@ export const typeDefs = gql`
     posts(userId: String!, limit: Int): [Post]
 
     "Get the followers of the given user."
-    followers(userId: String!, limit: Int): [User]
+    followers(userId: String!, limit: Int): [Following]
 
     "Get the users that the given user is following."
-    following(userId: String!, limit: Int): [User]
+    following(userId: String!, limit: Int): [Following]
   }
 
   "A User is someone who is registered for the Nitwit app."
