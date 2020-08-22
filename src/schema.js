@@ -30,8 +30,11 @@ export const typeDefs = gql`
     "The name of the User."
     username: String!
     posts: [Post]
+    following: [Following]
+    followers: [Following]
   }
 
+  "A Post is a message (tweet) a user posted."
   type Post {
     id: ID!
     text: String!
@@ -39,15 +42,18 @@ export const typeDefs = gql`
     author: User!
   }
 
+  "A Following is information about who is following who."
   type Following {
     id: ID!
+    "The user where this following information is about."
     user: User!
+    "The user that is being followed."
     followingUser: User!
   }
 
-  "A LoginResult is the result that is returned by login when it's successful."
+  "A LoginResult is the result that is returned by a login when it's successful."
   type LoginResult {
-    "The JWT token to use for subsequent requests."
+    "The JWT token to use for subsequent authenticated requests."
     token: String!
   }
 

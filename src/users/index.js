@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import validate from "validate.js";
+import mongoose from "mongoose";
 
 import mapToUserSchema from "./mapping";
 import User from "./model";
@@ -7,6 +8,7 @@ import User from "./model";
 export const createUserFunctions = (user) => ({
   getUsers,
   getUser,
+  getUserByUsername,
   getMe: () => getMe(user),
   createUser,
   deleteAllUsers,
@@ -15,6 +17,9 @@ export const createUserFunctions = (user) => ({
 
 async function getUser(userId, mapToSchema = true) {
   if (!userId) throw Error("Please provide a userId");
+
+  const idSeemsValid = mongoose.Types.ObjectId.isValid(userId);
+  if (!idSeemsValid) return null;
 
   const user = await User.findById(userId);
 

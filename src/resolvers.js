@@ -2,6 +2,11 @@ import jwt from "jsonwebtoken";
 import { createSignedToken } from "./jwt";
 import { async } from "validate.js";
 
+throw new Error("H I E R    W A S    I K    G E B L E V E N");
+//TODO Het aantal Following en Followers op het User type
+//TODO Following en Followers is niet heel duidelijk qua naamgeving...
+//TODO Mentions met de extractMentions code
+
 export const resolvers = {
   Query: {
     users: async (_, { limit }, { users: { getUsers } }) => {
@@ -38,6 +43,12 @@ export const resolvers = {
     posts: async (parent, { limit }, { posts: { getPosts } }) => {
       return await getPosts(parent.id, limit);
     },
+    following: async (parent, { limit }, { following: { getFollowing } }) => {
+      return await getFollowing(parent.id, limit);
+    },
+    followers: async (parent, { limit }, { following: { getFollowers } }) => {
+      return await getFollowers(parent.id, limit);
+    },
   },
   Post: {
     author: async (parent, _, { users: { getUser } }) => {
@@ -64,8 +75,12 @@ export const resolvers = {
       const user = await authenticateUser(username, password);
       return { token: createSignedToken(user) };
     },
-    createPost: async (_, { data: post }, { posts: { createPost } }) => {
-      return await createPost(post);
+    createPost: async (
+      _,
+      { data: post },
+      { posts: { createPost }, following: { getFollowers } }
+    ) => {
+      return await createPost(post, getFollowers);
     },
     follow: async (
       _,

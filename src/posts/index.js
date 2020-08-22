@@ -6,7 +6,7 @@ import TimelinePost from "../timeline/model";
 
 export const createPostFunctions = (user) => ({
   getPosts,
-  createPost: (post) => createPost(post, user),
+  createPost: (post, getFollowers) => createPost(post, user, getFollowers),
 });
 
 async function getPosts(authorUserId, limit) {
@@ -19,14 +19,16 @@ async function getPosts(authorUserId, limit) {
   return posts;
 }
 
-async function createPost(post, user) {
+async function createPost(post, user, getFollowers) {
   if (!user) throw new Error("Unauthorized");
 
   post.authorUserId = user.id;
 
   validateNewPost(post);
 
-  const followerUserIds = [user.id, "piet", "jan"];
+  const followers = await getFollowers(user.id);
+  const followerUserIds = [...followers.map((f) => f.userId), user.id];
+  console.log(user.id, followerUserIds);
 
   const createdPost = await createPostInTransaction(post, followerUserIds);
 
