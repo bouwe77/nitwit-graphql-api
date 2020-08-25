@@ -2,10 +2,11 @@ import jwt from "jsonwebtoken";
 import { createSignedToken } from "./jwt";
 import { async } from "validate.js";
 
-throw new Error("H I E R    W A S    I K    G E B L E V E N");
-//TODO Het aantal Following en Followers op het User type
+//throw new Error("H I E R    W A S    I K    G E B L E V E N");
+//Unfollow...
 //TODO Following en Followers is niet heel duidelijk qua naamgeving...
 //TODO Mentions met de extractMentions code
+//TODO Profielfoto als externe URL
 
 export const resolvers = {
   Query: {
@@ -85,9 +86,17 @@ export const resolvers = {
     follow: async (
       _,
       { userId },
-      { following: { createFollowing }, users: { getUser } }
+      {
+        following: { createFollowing },
+        users: { getUser, updateFollowerCount, updateFollowingCount },
+      }
     ) => {
-      return await createFollowing(userId, getUser);
+      return await createFollowing(
+        userId,
+        getUser,
+        updateFollowerCount,
+        updateFollowingCount
+      );
     },
   },
 };

@@ -57,6 +57,7 @@ function validateNewPost(post) {
   if (errors) throw new Error(errors.join(", "));
 }
 
+// Inpiration for this transaction implementation with MongoDB comes from this blog post: https://www.mongodb.com/blog/post/quick-start-nodejs--mongodb--how-to-implement-transactions
 async function createPostInTransaction(post, followerUserIds) {
   const session = await Post.startSession();
 

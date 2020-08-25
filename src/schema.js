@@ -31,7 +31,9 @@ export const typeDefs = gql`
     username: String!
     posts: [Post]
     following: [Following]
+    followingCount: Int!
     followers: [Following]
+    followerCount: Int!
   }
 
   "A Post is a message (tweet) a user posted."

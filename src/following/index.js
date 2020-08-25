@@ -4,8 +4,19 @@ import Follower from "./model";
 export const createFollowingFunctions = (user) => ({
   getFollowers,
   getFollowing,
-  createFollowing: (followingUserId, getUser) =>
-    createFollowing(user, followingUserId, getUser),
+  createFollowing: (
+    followingUserId,
+    getUser,
+    updateFollowerCount,
+    updateFollowingCount
+  ) =>
+    createFollowing(
+      user,
+      followingUserId,
+      getUser,
+      updateFollowerCount,
+      updateFollowingCount
+    ),
 });
 
 // Get following information for all users that are following the given user.
@@ -30,7 +41,13 @@ async function getFollowing(userId, limit) {
   return following;
 }
 
-async function createFollowing(user, followingUserId, getUser) {
+async function createFollowing(
+  user,
+  followingUserId,
+  getUser,
+  updateFollowerCount,
+  updateFollowingCount
+) {
   if (!user) throw new Error("Unauthorized");
 
   // You can not follow yourself.
@@ -49,8 +66,49 @@ async function createFollowing(user, followingUserId, getUser) {
   if (!followingUser) throw new Error("User not found");
 
   // Everything seems fine, save the following request.
-  const follower = { userId: user.id, followingUserId };
-  const createdFollower = await Follower.create(follower);
+  const following = { userId: user.id, followingUserId };
+  const createdFollowing = await createFollowingInTransaction(
+    following,
+    updateFollowerCount,
+    updateFollowingCount
+  );
 
-  return mapToFollowerSchema(createdFollower);
+  return mapToFollowerSchema(createdFollowing);
+}
+
+// Inpiration for this transaction implementation with MongoDB comes from this blog post: https://www.mongodb.com/blog/post/quick-start-nodejs--mongodb--how-to-implement-transactions
+async function createFollowingInTransaction(
+  following,
+  updateFollowerCount,
+  updateFollowingCount
+) {
+  const session = await Follower.startSession();
+
+  const transactionOptions = {
+    readPreference: "primary",
+    readConcern: { level: "local" },
+    writeConcern: { w: "majority" },
+  };
+
+  let createdFollowing = null;
+
+  try {
+    const transactionResult = await session.withTransaction(async () => {
+      // Create the following.
+      const created = await Follower.create([following], { session });
+      createdFollowing = created[0];
+
+      // Update the users
+      await updateFollowerCount(following.followingUserId, session);
+      await updateFollowingCount(following.userId, session);
+    }, transactionOptions);
+
+    if (!transactionResult) console.log("Transaction intentionally aborted");
+  } catch (e) {
+    console.error("Transaction aborted due to an unexpected error: " + e);
+  } finally {
+    await session.endSession();
+  }
+
+  return createdFollowing;
 }

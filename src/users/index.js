@@ -11,6 +11,8 @@ export const createUserFunctions = (user) => ({
   getUserByUsername,
   getMe: () => getMe(user),
   createUser,
+  updateFollowerCount,
+  updateFollowingCount,
   deleteAllUsers,
   authenticateUser,
 });
@@ -57,6 +59,30 @@ async function createUser(user) {
 
   const createdUser = await User.create(user);
   return mapToUserSchema(createdUser);
+}
+
+async function updateFollowingCount(userId, session = null, increase = true) {
+  const user = await getUser(userId);
+  if (!user) throw new Error("User not found");
+
+  let followingCount = user.followingCount + 1;
+  if (!increase) followingCount = user.followingCount - 1;
+
+  if (session)
+    await User.updateOne({ _id: userId }, { followingCount }, { session });
+  else await User.updateOne({ _id: userId }, { followingCount });
+}
+
+async function updateFollowerCount(userId, session = null, increase = true) {
+  const user = await getUser(userId);
+  if (!user) throw new Error("User not found");
+
+  let followerCount = user.followerCount + 1;
+  if (!increase) followerCount = user.followerCount - 1;
+
+  if (session)
+    await User.updateOne({ _id: userId }, { followerCount }, { session });
+  else await User.updateOne({ _id: userId }, { followerCount });
 }
 
 async function deleteAllUsers() {
