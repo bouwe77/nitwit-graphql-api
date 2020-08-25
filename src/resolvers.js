@@ -3,7 +3,6 @@ import { createSignedToken } from "./jwt";
 import { async } from "validate.js";
 
 //throw new Error("H I E R    W A S    I K    G E B L E V E N");
-//Unfollow...
 //TODO Following en Followers is niet heel duidelijk qua naamgeving...
 //TODO Mentions met de extractMentions code
 //TODO Profielfoto als externe URL
@@ -92,6 +91,21 @@ export const resolvers = {
       }
     ) => {
       return await createFollowing(
+        userId,
+        getUser,
+        updateFollowerCount,
+        updateFollowingCount
+      );
+    },
+    unfollow: async (
+      _,
+      { userId },
+      {
+        following: { deleteFollowing },
+        users: { getUser, updateFollowerCount, updateFollowingCount },
+      }
+    ) => {
+      return await deleteFollowing(
         userId,
         getUser,
         updateFollowerCount,

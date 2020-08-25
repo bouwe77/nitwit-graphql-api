@@ -76,5 +76,8 @@ export const typeDefs = gql`
 
     "The logged in user starts following the given user."
     follow(userId: String!): Following
+
+    "The logged in user stops following the given user."
+    unfollow(userId: String!): Following
   }
 `;

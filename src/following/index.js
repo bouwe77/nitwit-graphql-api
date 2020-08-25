@@ -17,6 +17,19 @@ export const createFollowingFunctions = (user) => ({
       updateFollowerCount,
       updateFollowingCount
     ),
+  deleteFollowing: (
+    followingUserId,
+    getUser,
+    updateFollowerCount,
+    updateFollowingCount
+  ) =>
+    deleteFollowing(
+      user,
+      followingUserId,
+      getUser,
+      updateFollowerCount,
+      updateFollowingCount
+    ),
 });
 
 // Get following information for all users that are following the given user.
@@ -54,7 +67,7 @@ async function createFollowing(
   if (user.id === followingUserId)
     throw new Error("You can not follow yourself");
 
-  // If the following combination aready exits just return that one.
+  // If the following combination already exits just return that one.
   const existingFollowing = await Follower.findOne({
     userId: user.id,
     followingUserId,
@@ -65,7 +78,7 @@ async function createFollowing(
   const followingUser = await getUser(followingUserId);
   if (!followingUser) throw new Error("User not found");
 
-  // Everything seems fine, save the following request.
+  // Everything seems fine, save the following data.
   const following = { userId: user.id, followingUserId };
   const createdFollowing = await createFollowingInTransaction(
     following,
@@ -74,6 +87,36 @@ async function createFollowing(
   );
 
   return mapToFollowerSchema(createdFollowing);
+}
+
+async function deleteFollowing(
+  user,
+  followingUserId,
+  getUser,
+  updateFollowerCount,
+  updateFollowingCount
+) {
+  if (!user) throw new Error("Unauthorized");
+
+  // You can not unfollow yourself.
+  if (user.id === followingUserId)
+    throw new Error("You can not unfollow yourself");
+
+  // If the following combination does not exist, ....
+  const existingFollowing = await Follower.findOne({
+    userId: user.id,
+    followingUserId,
+  });
+  if (!existingFollowing) return mapToFollowerSchema(null);
+
+  // Everything seems fine, delete the following data.
+  const deletedFollowing = await deleteFollowingInTransaction(
+    existingFollowing,
+    updateFollowerCount,
+    updateFollowingCount
+  );
+
+  return mapToFollowerSchema(deletedFollowing);
 }
 
 // Inpiration for this transaction implementation with MongoDB comes from this blog post: https://www.mongodb.com/blog/post/quick-start-nodejs--mongodb--how-to-implement-transactions
@@ -94,11 +137,11 @@ async function createFollowingInTransaction(
 
   try {
     const transactionResult = await session.withTransaction(async () => {
-      // Create the following.
+      // Create the following data.
       const created = await Follower.create([following], { session });
       createdFollowing = created[0];
 
-      // Update the users
+      // Update the follower/following counts of the users.
       await updateFollowerCount(following.followingUserId, session);
       await updateFollowingCount(following.userId, session);
     }, transactionOptions);
@@ -111,4 +154,37 @@ async function createFollowingInTransaction(
   }
 
   return createdFollowing;
+}
+
+async function deleteFollowingInTransaction(
+  following,
+  updateFollowerCount,
+  updateFollowingCount
+) {
+  const session = await Follower.startSession();
+
+  const transactionOptions = {
+    readPreference: "primary",
+    readConcern: { level: "local" },
+    writeConcern: { w: "majority" },
+  };
+
+  try {
+    const transactionResult = await session.withTransaction(async () => {
+      // Delete the following data.
+      await Follower.deleteOne({ _id: following._id }, { session });
+
+      // Update the follower/following counts of the users.
+      await updateFollowerCount(following.followingUserId, session, false);
+      await updateFollowingCount(following.userId, session, false);
+    }, transactionOptions);
+
+    if (!transactionResult) console.log("Transaction intentionally aborted");
+  } catch (e) {
+    console.error("Transaction aborted due to an unexpected error: " + e);
+  } finally {
+    await session.endSession();
+  }
+
+  return following;
 }
