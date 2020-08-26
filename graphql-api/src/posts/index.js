@@ -3,7 +3,7 @@ import validate from "validate.js";
 import mapToPostSchema from "./mapping";
 import Post from "./model";
 import TimelinePost from "../timeline/model";
-import { extractMentions } from "twitter-text";
+import { extractMentions, extractHashtagsWithIndices } from "twitter-text";
 
 export const createPostFunctions = (user) => ({
   getPosts,
@@ -36,6 +36,9 @@ async function createPost(post, user, getFollowers, getUsersByUsernames) {
   const mentionedUserIds = mentionedUsers.map((u) => u._id);
 
   const timelineUserIds = [...followerUserIds, ...mentionedUserIds];
+
+  const hashtags = extractHashtagsWithIndices(post.text);
+  console.log(hashtags);
 
   const createdPost = await createPostInTransaction(post, timelineUserIds);
 
