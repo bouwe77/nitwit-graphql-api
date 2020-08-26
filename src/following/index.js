@@ -1,4 +1,4 @@
-import mapToFollowerSchema from "./mapping";
+import { mapToFollowerSchema, mapToFollowUnfollowResult } from "./mapping";
 import Follower from "./model";
 
 export const createFollowingFunctions = (user) => ({
@@ -19,14 +19,12 @@ export const createFollowingFunctions = (user) => ({
     ),
   deleteFollowing: (
     followingUserId,
-    getUser,
     updateFollowerCount,
     updateFollowingCount
   ) =>
     deleteFollowing(
       user,
       followingUserId,
-      getUser,
       updateFollowerCount,
       updateFollowingCount
     ),
@@ -38,7 +36,9 @@ async function getFollowers(userId, limit) {
 
   if (!limit) limit = data.length;
 
-  const followers = data.slice(0, limit).map(mapToFollowerSchema);
+  const followers = data
+    .slice(0, limit)
+    .map((f) => mapToFollowerSchema(f, false));
 
   return followers;
 }
@@ -49,7 +49,9 @@ async function getFollowing(userId, limit) {
 
   if (!limit) limit = data.length;
 
-  const following = data.slice(0, limit).map(mapToFollowerSchema);
+  const following = data
+    .slice(0, limit)
+    .map((f) => mapToFollowerSchema(f, true));
 
   return following;
 }
@@ -72,27 +74,27 @@ async function createFollowing(
     userId: user.id,
     followingUserId,
   });
-  if (existingFollowing) return mapToFollowerSchema(existingFollowing);
+  //TODO iets anders teruggeven
+  if (existingFollowing) return mapToFollowerSchema(null);
 
   // The user you are trying to follow must exist.
   const followingUser = await getUser(followingUserId);
   if (!followingUser) throw new Error("User not found");
 
-  // Everything seems fine, save the following data.
+  // Everything seems fine, so save the following data.
   const following = { userId: user.id, followingUserId };
-  const createdFollowing = await createFollowingInTransaction(
+  await createFollowingInTransaction(
     following,
     updateFollowerCount,
     updateFollowingCount
   );
 
-  return mapToFollowerSchema(createdFollowing);
+  return mapToFollowUnfollowResult(true);
 }
 
 async function deleteFollowing(
   user,
   followingUserId,
-  getUser,
   updateFollowerCount,
   updateFollowingCount
 ) {
@@ -109,14 +111,14 @@ async function deleteFollowing(
   });
   if (!existingFollowing) return mapToFollowerSchema(null);
 
-  // Everything seems fine, delete the following data.
-  const deletedFollowing = await deleteFollowingInTransaction(
+  // Everything seems fine, so delete the following data.
+  await deleteFollowingInTransaction(
     existingFollowing,
     updateFollowerCount,
     updateFollowingCount
   );
 
-  return mapToFollowerSchema(deletedFollowing);
+  return mapToFollowUnfollowResult(true);
 }
 
 // Inpiration for this transaction implementation with MongoDB comes from this blog post: https://www.mongodb.com/blog/post/quick-start-nodejs--mongodb--how-to-implement-transactions

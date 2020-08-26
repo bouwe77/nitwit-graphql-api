@@ -47,16 +47,18 @@ export const typeDefs = gql`
   "A Following is information about who is following who."
   type Following {
     id: ID!
-    "The user where this following information is about."
     user: User!
-    "The user that is being followed."
-    followingUser: User!
   }
 
   "A LoginResult is the result that is returned by a login when it's successful."
   type LoginResult {
     "The JWT token to use for subsequent authenticated requests."
     token: String!
+  }
+
+  "The result of a follow request."
+  type FollowUnfollowResult {
+    success: Boolean!
   }
 
   "The input for creating a new post."
@@ -75,9 +77,9 @@ export const typeDefs = gql`
     createPost(data: CreatePostInput!): Post!
 
     "The logged in user starts following the given user."
-    follow(userId: String!): Following
+    follow(userId: String!): FollowUnfollowResult
 
     "The logged in user stops following the given user."
-    unfollow(userId: String!): Following
+    unfollow(userId: String!): FollowUnfollowResult
   }
 `;

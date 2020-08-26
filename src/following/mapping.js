@@ -1,9 +1,12 @@
-export default function mapToFollowerSchema(followerModel) {
+export function mapToFollowerSchema(followerModel, following) {
   if (!followerModel) return null;
 
   return {
     id: followerModel._id,
-    userId: followerModel.userId,
-    followingUserId: followerModel.followingUserId,
+    userId: following ? followerModel.followingUserId : followerModel.userId,
   };
+}
+
+export function mapToFollowUnfollowResult(success) {
+  return { success };
 }

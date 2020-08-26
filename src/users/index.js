@@ -9,6 +9,7 @@ export const createUserFunctions = (user) => ({
   getUsers,
   getUser,
   getUserByUsername,
+  getUsersByUsernames,
   getMe: () => getMe(user),
   createUser,
   updateFollowerCount,
@@ -34,6 +35,12 @@ async function getUserByUsername(username, mapToSchema = true) {
   const user = await User.findOne({ username });
 
   return mapToSchema ? mapToUserSchema(user) : user;
+}
+
+async function getUsersByUsernames(usernames, mapToSchema = true) {
+  const users = await User.find().where("username").in(usernames).exec();
+
+  return mapToSchema ? users.map(mapToUserSchema) : users;
 }
 
 async function getMe(user) {

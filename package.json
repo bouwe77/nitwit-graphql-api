@@ -18,6 +18,7 @@
     "graphql": "^15.3.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.25",
+    "twitter-text": "^3.1.0",
     "validate.js": "^0.13.1"
   },
   "devDependencies": {

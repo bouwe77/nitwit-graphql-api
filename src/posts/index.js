@@ -3,10 +3,12 @@ import validate from "validate.js";
 import mapToPostSchema from "./mapping";
 import Post from "./model";
 import TimelinePost from "../timeline/model";
+import { extractMentions } from "twitter-text";
 
 export const createPostFunctions = (user) => ({
   getPosts,
-  createPost: (post, getFollowers) => createPost(post, user, getFollowers),
+  createPost: (post, getFollowers, getUsersByUsernames) =>
+    createPost(post, user, getFollowers, getUsersByUsernames),
 });
 
 async function getPosts(authorUserId, limit) {
@@ -19,7 +21,7 @@ async function getPosts(authorUserId, limit) {
   return posts;
 }
 
-async function createPost(post, user, getFollowers) {
+async function createPost(post, user, getFollowers, getUsersByUsernames) {
   if (!user) throw new Error("Unauthorized");
 
   post.authorUserId = user.id;
@@ -28,9 +30,14 @@ async function createPost(post, user, getFollowers) {
 
   const followers = await getFollowers(user.id);
   const followerUserIds = [...followers.map((f) => f.userId), user.id];
-  console.log(user.id, followerUserIds);
 
-  const createdPost = await createPostInTransaction(post, followerUserIds);
+  const mentions = extractMentions(post.text);
+  const mentionedUsers = await getUsersByUsernames(mentions, false);
+  const mentionedUserIds = mentionedUsers.map((u) => u._id);
+
+  const timelineUserIds = [...followerUserIds, ...mentionedUserIds];
+
+  const createdPost = await createPostInTransaction(post, timelineUserIds);
 
   return mapToPostSchema(createdPost);
 }
@@ -58,7 +65,7 @@ function validateNewPost(post) {
 }
 
 // Inpiration for this transaction implementation with MongoDB comes from this blog post: https://www.mongodb.com/blog/post/quick-start-nodejs--mongodb--how-to-implement-transactions
-async function createPostInTransaction(post, followerUserIds) {
+async function createPostInTransaction(post, timelineUserIds) {
   const session = await Post.startSession();
 
   const transactionOptions = {
@@ -75,8 +82,8 @@ async function createPostInTransaction(post, followerUserIds) {
       const createdPosts = await Post.create([post], { session });
       createdPost = createdPosts[0];
 
-      // Also create the same post on the timelines of the author and all followers.
-      const timelinePosts = followerUserIds.map((userId) => {
+      // Also create the same post on the timelines of the author, all followers and all mentioned users.
+      const timelinePosts = timelineUserIds.map((userId) => {
         return { ...post, timelineUserId: userId };
       });
       await TimelinePost.create(timelinePosts, { session });

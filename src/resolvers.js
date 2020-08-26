@@ -2,10 +2,9 @@ import jwt from "jsonwebtoken";
 import { createSignedToken } from "./jwt";
 import { async } from "validate.js";
 
-//throw new Error("H I E R    W A S    I K    G E B L E V E N");
-//TODO Following en Followers is niet heel duidelijk qua naamgeving...
-//TODO Mentions met de extractMentions code
-//TODO Profielfoto als externe URL
+//======================================================================================
+//TODO Profielfoto als externe URL?
+//======================================================================================
 
 export const resolvers = {
   Query: {
@@ -59,9 +58,6 @@ export const resolvers = {
     user: async (parent, _, { users: { getUser } }) => {
       return await getUser(parent.userId);
     },
-    followingUser: async (parent, _, { users: { getUser } }) => {
-      return await getUser(parent.followingUserId);
-    },
   },
   Mutation: {
     register: async (_, { username, password }, { users: { createUser } }) => {
@@ -78,9 +74,13 @@ export const resolvers = {
     createPost: async (
       _,
       { data: post },
-      { posts: { createPost }, following: { getFollowers } }
+      {
+        posts: { createPost },
+        following: { getFollowers },
+        users: { getUsersByUsernames },
+      }
     ) => {
-      return await createPost(post, getFollowers);
+      return await createPost(post, getFollowers, getUsersByUsernames);
     },
     follow: async (
       _,
@@ -102,12 +102,11 @@ export const resolvers = {
       { userId },
       {
         following: { deleteFollowing },
-        users: { getUser, updateFollowerCount, updateFollowingCount },
+        users: { updateFollowerCount, updateFollowingCount },
       }
     ) => {
       return await deleteFollowing(
         userId,
-        getUser,
         updateFollowerCount,
         updateFollowingCount
       );
