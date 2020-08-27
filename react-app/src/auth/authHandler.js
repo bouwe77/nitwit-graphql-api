@@ -6,7 +6,7 @@ import getClient from "../apolloClient";
  * Authenticates against the API with the given credentials.
  * If successful, a JWT token is stored in the browser's local storage.
  */
-async function login(username, password) {
+async function signIn(username, password) {
   try {
     const token = await authenticate(username, password);
     jwt.saveJwtToken(token);
@@ -19,7 +19,7 @@ async function login(username, password) {
 /**
  * Logout means: just remove the JWT token.
  */
-function logout() {
+function signOut() {
   jwt.removeJwtToken();
 }
 
@@ -28,10 +28,6 @@ async function getMe() {
   if (!token) return null;
 
   try {
-    //TODO Call the "me" query
-    //TODO Return user data, if found.
-    //TODO Otherwise return null.
-
     const client = getClient();
     const result = await client.query({
       query: gql`
@@ -43,25 +39,43 @@ async function getMe() {
         }
       `,
     });
-    console.log(result);
-    return result.me;
+    return result?.data?.me;
   } catch (error) {
     console.error(error);
     throw error;
   }
 }
 
+// async function authenticate(username, password) {
+//   try {
+//     const client = getClient();
+
+//     const result = await client.mutate({
+//       mutation: gql`
+//         mutation {
+//           login(username: "bouwe", password: "password") {
+//             token
+//           }
+//         }
+//       `,
+//     });
+//     return result?.data?.login?.token;
+//   } catch (error) {
+//     console.error(error);
+//     //throw new Error("Unauthorized");
+//     throw error;
+//   }
+// }
+
 function authenticate(username, password) {
   const actualPassword = "password";
 
-  if (password !== actualPassword) throw new Error("Unauthenticated");
+  if (password !== actualPassword) throw new Error("Unauthorized");
 
   if (username === "bouwe")
     return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNWYyMDhmZTZjZjU3ZDA1NGZhYTJiZmVhIiwidXNlcm5hbWUiOiJib3V3ZSJ9LCJpYXQiOjE1OTg0NjkzMjgsImV4cCI6MTYzMDAyNjkyOH0.wa2HmEf87kxs-zczVHOQ1bryoxYjGpeZlhgln64PE9U";
 
-  //TODO Eventueel alle tokens hier hard-coded...
-
   throw new Error("Unauthorized");
 }
 
-export { login, logout, getMe };
+export { signIn, signOut, getMe };

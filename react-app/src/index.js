@@ -4,14 +4,17 @@ import App from "./app/App";
 import "./styles.css";
 import { ApolloProvider } from "@apollo/react-hooks";
 import getClient from "./apolloClient";
+import { AuthProvider } from "./auth/AuthContext";
 
 const client = getClient();
 
 ReactDOM.render(
   <React.StrictMode>
-    <ApolloProvider client={client}>
-      <App />
-    </ApolloProvider>
+    <AuthProvider>
+      <ApolloProvider client={client}>
+        <App />
+      </ApolloProvider>
+    </AuthProvider>
     ,
   </React.StrictMode>,
   document.getElementById("root")

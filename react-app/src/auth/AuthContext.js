@@ -12,7 +12,7 @@ const AuthContext = createContext();
  */
 function AuthProvider(props) {
   const [user, setUser] = useState();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(false);
 
   useEffect(() => {
     let didCancel = false;
@@ -27,36 +27,36 @@ function AuthProvider(props) {
     };
   }, []);
 
-  async function initUserState(x) {
+  async function initUserState() {
     try {
       const user = await auth.getMe();
       setUser(user);
-      setIsLoggedIn(user != null);
+      setIsSignedIn(user != null);
     } catch (e) {
       setUser(null);
-      setIsLoggedIn(false);
+      setIsSignedIn(false);
     }
   }
 
-  async function login(username, password) {
+  async function signIn(username, password) {
     try {
-      await auth.login(username, password);
-      initUserState("login");
+      await auth.signIn(username, password);
+      initUserState();
     } catch (error) {
       console.log("error:", error);
       throw error;
     }
   }
 
-  function logout() {
+  function signOut() {
     setUser(null);
-    setIsLoggedIn(false);
-    auth.logout();
+    setIsSignedIn(false);
+    auth.signOut();
   }
 
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, isLoggedIn }}
+      value={{ user, signIn, signOut, isSignedIn }}
       {...props}
     />
   );

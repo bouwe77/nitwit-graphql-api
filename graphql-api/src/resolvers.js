@@ -14,6 +14,13 @@ export const resolvers = {
     user: async (_, { id }, { users: { getUser } }) => {
       return await getUser(id);
     },
+    userByUsername: async (
+      _,
+      { username },
+      { users: { getUserByUsername } }
+    ) => {
+      return await getUserByUsername(username);
+    },
     me: async (_, args, { users: { getMe } }) => {
       return await getMe();
     },

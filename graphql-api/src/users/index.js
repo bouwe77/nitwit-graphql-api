@@ -45,7 +45,7 @@ async function getUsersByUsernames(usernames, mapToSchema = true) {
 
 async function getMe(user) {
   if (!user) throw new Error("Unauthorized");
-  return await getUser(user.username);
+  return await getUserByUsername(user.username);
 }
 
 async function getUsers(limit) {
@@ -114,14 +114,20 @@ const userConstraints = {
     presence: true,
     length: {
       minimum: 1,
-      message: "must not be empty",
+      maximum: 100,
+      message: "must be between 1 and 100 characters",
+    },
+    format: {
+      pattern: "^[0-9a-zA-Z]$",
+      message: "can have alphanumeric characters only",
     },
   },
   password: {
     presence: true,
     length: {
       minimum: 6,
-      message: "must be at least 6 characters",
+      maximum: 100,
+      message: "must be between 6 and 100 characters",
     },
   },
 };

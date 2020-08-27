@@ -5,7 +5,7 @@ export default function Post({ post }) {
     <div className="post">
       {post.text}
       <br />
-      {post.author.username}
+      <a href={`/${post.author.username}`}>@{post.author.username}</a>
     </div>
   );
 }

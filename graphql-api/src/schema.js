@@ -6,7 +6,10 @@ export const typeDefs = gql`
     users(limit: Int): [User]
 
     "Get a User by its ID."
-    user(id: ID): User
+    user(id: ID!): User
+
+    "Get a User by its username."
+    userByUsername(username: String!): User
 
     "Get the currently logged in user."
     me: User

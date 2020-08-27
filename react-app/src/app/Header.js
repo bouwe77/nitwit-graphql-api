@@ -1,5 +1,9 @@
 import React from "react";
 
 export default function Header() {
-  return <h1>Nitwit</h1>;
+  return (
+    <a href="/">
+      <h1>Nitwit</h1>
+    </a>
+  );
 }

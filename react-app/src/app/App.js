@@ -1,15 +1,18 @@
 import React from "react";
-import Timeline from "../timeline/Timeline";
 import Header from "./Header";
+import Page from "./Page";
+import Sidebar from "./Sidebar";
 
 function App() {
   return (
     <>
       <div className="main">
         <Header />
-        <Timeline />
+        <Page />
       </div>
-      <div className="sidebar">...</div>
+      <div className="sidebar">
+        <Sidebar />
+      </div>
     </>
   );
 }

@@ -1,11 +1,11 @@
 import ApolloClient from "apollo-boost";
-import { getJwtTokenFromLocalStorage } from "./auth/jwt";
+import { getJwtToken } from "./auth/jwt";
 
 export default function getClient() {
   return new ApolloClient({
-    uri: "http://localhost:7778",
+    uri: "http://localhost:7778/graphql",
     request: (operation) => {
-      const token = getJwtTokenFromLocalStorage();
+      const token = getJwtToken();
 
       operation.setContext({
         headers: {
