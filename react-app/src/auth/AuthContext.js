@@ -7,8 +7,8 @@ import * as auth from "./authHandler";
 const AuthContext = createContext();
 
 /**
- * The AuthProvider is the provider for the AuthContext.
- * It provides means of holding data of the logged in user and functions for logging in or out.
+ * The AuthProvider is the provider for the AuthContext, which contains
+ * data of the logged in user and functions for logging in or out.
  */
 function AuthProvider(props) {
   const [user, setUser] = useState();

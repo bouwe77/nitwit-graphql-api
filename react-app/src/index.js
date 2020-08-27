@@ -2,22 +2,10 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./app/App";
 import "./styles.css";
-import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "@apollo/react-hooks";
-import { getJwtTokenFromLocalStorage } from "./auth/jwt";
+import getClient from "./apolloClient";
 
-const client = new ApolloClient({
-  uri: "http://localhost:7778",
-  request: (operation) => {
-    const token = getJwtTokenFromLocalStorage();
-
-    operation.setContext({
-      headers: {
-        authorization: token || "",
-      },
-    });
-  },
-});
+const client = getClient();
 
 ReactDOM.render(
   <React.StrictMode>
