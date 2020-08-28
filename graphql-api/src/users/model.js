@@ -1,3 +1,5 @@
+import { USERS } from "../constants";
+
 const mongoose = require("../database");
 
 const schema = {
@@ -7,6 +9,6 @@ const schema = {
   followingCount: { type: mongoose.SchemaTypes.Number },
 };
 
-const Model = mongoose.model("users", mongoose.Schema(schema));
+const Model = mongoose.model(USERS, mongoose.Schema(schema));
 
 export default Model;

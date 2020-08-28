@@ -43,6 +43,7 @@ export const typeDefs = gql`
   type Post {
     id: ID!
     text: String!
+    timestamp: String!
     authorUserId: String!
     author: User!
   }

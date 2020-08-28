@@ -1,5 +1,4 @@
 import validate from "validate.js";
-
 import mapToPostSchema from "./mapping";
 import Post from "./model";
 import TimelinePost from "../timeline/model";
@@ -25,6 +24,7 @@ async function createPost(post, user, getFollowers, getUsersByUsernames) {
   if (!user) throw new Error("Unauthorized");
 
   post.authorUserId = user.id;
+  post.timestamp = new Date().toISOString();
 
   validateNewPost(post);
 
@@ -37,8 +37,8 @@ async function createPost(post, user, getFollowers, getUsersByUsernames) {
 
   const timelineUserIds = [...followerUserIds, ...mentionedUserIds];
 
-  const hashtags = extractHashtagsWithIndices(post.text);
-  console.log(hashtags);
+  // const hashtags = extractHashtagsWithIndices(post.text);
+  // console.log(hashtags);
 
   const createdPost = await createPostInTransaction(post, timelineUserIds);
 

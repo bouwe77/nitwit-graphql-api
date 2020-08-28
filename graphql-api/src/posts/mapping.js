@@ -5,5 +5,6 @@ export default function mapToPostSchema(postModel) {
     id: postModel._id,
     text: postModel.text,
     authorUserId: postModel.authorUserId,
+    timestamp: postModel.timestamp,
   };
 }

@@ -1,4 +1,8 @@
-// Environment variables
+import { POSTS } from "./constants";
+import { TIMELINEPOSTS } from "./constants";
+import { USERS } from "./constants";
+import { FOLLOWERS } from "./constants";
+
 require("dotenv").config();
 
 const mongoose = require("mongoose");
@@ -19,6 +23,14 @@ db.on("error", (error) => {
 });
 
 db.once("open", () => {
+  // Workaround: To prevent the dreaded "Cannot create namespace in multi-document transaction" error
+  // when inserting documents in a transaction to a collection that does not yet exist,
+  // the collectiona are created here just to be sure.
+  mongoose.connection.createCollection(POSTS);
+  mongoose.connection.createCollection(TIMELINEPOSTS);
+  mongoose.connection.createCollection(USERS);
+  mongoose.connection.createCollection(FOLLOWERS);
+
   console.log("🗂  MongoDB connected successfully");
 });
 

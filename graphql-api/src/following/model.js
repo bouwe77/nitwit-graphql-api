@@ -1,3 +1,5 @@
+import { FOLLOWERS } from "../constants";
+
 const mongoose = require("../database");
 
 const schema = {
@@ -5,6 +7,6 @@ const schema = {
   followingUserId: { type: mongoose.SchemaTypes.String, required: true },
 };
 
-const Model = mongoose.model("followers", mongoose.Schema(schema));
+const Model = mongoose.model(FOLLOWERS, mongoose.Schema(schema));
 
 export default Model;

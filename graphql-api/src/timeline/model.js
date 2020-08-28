@@ -1,3 +1,5 @@
+import { TIMELINEPOSTS } from "../constants";
+
 const mongoose = require("../database");
 
 const schema = {
@@ -6,6 +8,6 @@ const schema = {
   timelineUserId: { type: mongoose.SchemaTypes.String, required: true },
 };
 
-const Model = mongoose.model("timelineposts", mongoose.Schema(schema));
+const Model = mongoose.model(TIMELINEPOSTS, mongoose.Schema(schema));
 
 export default Model;

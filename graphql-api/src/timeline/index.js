@@ -8,7 +8,9 @@ export const createTimelineFunctions = (user) => ({
 async function getTimeline(user, limit) {
   if (!user) throw new Error("Unauthorized");
 
-  const data = await TimelinePost.find({ timelineUserId: user.id });
+  const data = await TimelinePost.find({ timelineUserId: user.id }).sort({
+    timestamp: "desc",
+  });
 
   if (!limit) limit = data.length;
 
