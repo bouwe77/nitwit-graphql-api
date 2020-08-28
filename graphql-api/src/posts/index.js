@@ -11,7 +11,9 @@ export const createPostFunctions = (user) => ({
 });
 
 async function getPosts(authorUserId, limit) {
-  const data = await Post.find({ authorUserId });
+  const data = await Post.find({ authorUserId }).sort({
+    timestamp: "asc",
+  });
 
   if (!limit) limit = data.length;
 
