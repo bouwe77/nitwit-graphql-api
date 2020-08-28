@@ -48,12 +48,13 @@ async function getMe(user) {
   return await getUserByUsername(user.username);
 }
 
-async function getUsers(limit) {
-  const data = await User.find({});
+async function getUsers(skip, limit) {
+  if (!limit) limit = 100;
+  if (!skip) skip = 0;
 
-  if (!limit) limit = data.length;
+  const data = await User.find({}).skip(skip).limit(limit);
 
-  const users = data.slice(0, limit).map(mapToUserSchema);
+  const users = data.map(mapToUserSchema);
 
   return users;
 }

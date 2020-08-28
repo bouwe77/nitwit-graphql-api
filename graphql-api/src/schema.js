@@ -3,7 +3,7 @@ import { gql } from "apollo-server";
 export const typeDefs = gql`
   type Query {
     "Get all Users."
-    users(limit: Int): [User]
+    users(skip: Int, limit: Int): [User]
 
     "Get a User by its ID."
     user(id: ID!): User
@@ -18,13 +18,13 @@ export const typeDefs = gql`
     timeline: [Post]
 
     "Get the posts of a user."
-    posts(userId: String!, limit: Int): [Post]
+    posts(userId: String!, offset: Int, skip: Int, limit: Int): [Post]
 
     "Get the followers of the given user."
-    followers(userId: String!, limit: Int): [Following]
+    followers(userId: String!, skip: Int, limit: Int): [Following]
 
     "Get the users that the given user is following."
-    following(userId: String!, limit: Int): [Following]
+    following(userId: String!, skip: Int, limit: Int): [Following]
   }
 
   "A User is someone who is registered for the Nitwit app."

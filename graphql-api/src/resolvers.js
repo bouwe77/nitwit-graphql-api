@@ -8,8 +8,8 @@ import { async } from "validate.js";
 
 export const resolvers = {
   Query: {
-    users: async (_, { limit }, { users: { getUsers } }) => {
-      return await getUsers(limit);
+    users: async (_, { skip, limit }, { users: { getUsers } }) => {
+      return await getUsers(skip, limit);
     },
     user: async (_, { id }, { users: { getUser } }) => {
       return await getUser(id);
@@ -24,36 +24,44 @@ export const resolvers = {
     me: async (_, args, { users: { getMe } }) => {
       return await getMe();
     },
-    timeline: async (_, { limit }, { timeline: { getTimeline } }) => {
-      return await getTimeline(limit);
+    timeline: async (_, { skip, limit }, { timeline: { getTimeline } }) => {
+      return await getTimeline(skip, limit);
     },
-    posts: async (_, { userId, limit }, { posts: { getPosts } }) => {
-      return await getPosts(userId, limit);
+    posts: async (_, { userId, skip, limit }, { posts: { getPosts } }) => {
+      return await getPosts(userId, skip, limit);
     },
     followers: async (
       _,
-      { userId, limit },
+      { userId, skip, limit },
       { following: { getFollowers } }
     ) => {
-      return await getFollowers(userId, limit);
+      return await getFollowers(userId, skip, limit);
     },
     following: async (
       _,
-      { userId, limit },
+      { userId, skip, limit },
       { following: { getFollowing } }
     ) => {
-      return await getFollowing(userId, limit);
+      return await getFollowing(userId, skip, limit);
     },
   },
   User: {
-    posts: async (parent, { limit }, { posts: { getPosts } }) => {
-      return await getPosts(parent.id, limit);
+    posts: async (parent, { skip, limit }, { posts: { getPosts } }) => {
+      return await getPosts(parent.id, skip, limit);
     },
-    following: async (parent, { limit }, { following: { getFollowing } }) => {
-      return await getFollowing(parent.id, limit);
+    following: async (
+      parent,
+      { skip, limit },
+      { following: { getFollowing } }
+    ) => {
+      return await getFollowing(parent.id, skip, limit);
     },
-    followers: async (parent, { limit }, { following: { getFollowers } }) => {
-      return await getFollowers(parent.id, limit);
+    followers: async (
+      parent,
+      { skip, limit },
+      { following: { getFollowers } }
+    ) => {
+      return await getFollowers(parent.id, skip, limit);
     },
   },
   Post: {

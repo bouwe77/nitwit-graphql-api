@@ -10,14 +10,18 @@ export const createPostFunctions = (user) => ({
     createPost(post, user, getFollowers, getUsersByUsernames),
 });
 
-async function getPosts(authorUserId, limit) {
-  const data = await Post.find({ authorUserId }).sort({
-    timestamp: "asc",
-  });
+async function getPosts(authorUserId, skip, limit) {
+  if (!limit) limit = 100;
+  if (!skip) skip = 0;
 
-  if (!limit) limit = data.length;
+  const data = await Post.find({ authorUserId })
+    .sort({
+      timestamp: "asc",
+    })
+    .skip(skip)
+    .limit(limit);
 
-  const posts = data.slice(0, limit).map(mapToPostSchema);
+  const posts = data.map(mapToPostSchema);
 
   return posts;
 }

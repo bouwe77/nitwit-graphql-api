@@ -31,27 +31,26 @@ export const createFollowingFunctions = (user) => ({
 });
 
 // Get following information for all users that are following the given user.
-async function getFollowers(userId, limit) {
-  const data = await Follower.find({ followingUserId: userId });
+async function getFollowers(userId, skip, limit) {
+  if (!limit) limit = 100;
+  if (!skip) skip = 0;
 
-  if (!limit) limit = data.length;
-
-  const followers = data
-    .slice(0, limit)
-    .map((f) => mapToFollowerSchema(f, false));
+  const data = await Follower.find({ followingUserId: userId })
+    .skip(skip)
+    .limit(limit);
+  const followers = data.map((f) => mapToFollowerSchema(f, false));
 
   return followers;
 }
 
 // Get following information for all users the given user is following.
-async function getFollowing(userId, limit) {
-  const data = await Follower.find({ userId });
+async function getFollowing(userId, skip, limit) {
+  if (!limit) limit = 100;
+  if (!skip) skip = 0;
 
-  if (!limit) limit = data.length;
+  const data = await Follower.find({ userId }).skip(skip).limit(limit);
 
-  const following = data
-    .slice(0, limit)
-    .map((f) => mapToFollowerSchema(f, true));
+  const following = data.map((f) => mapToFollowerSchema(f, true));
 
   return following;
 }
