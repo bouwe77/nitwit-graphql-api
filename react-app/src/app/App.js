@@ -6,11 +6,6 @@ import Sidebar from "./Sidebar";
 function App() {
   return (
     <>
-      TODO
-      <ul>
-        <li>Initializing state voor auth</li>
-        <li>optimistic updates of Subscriptions</li>
-      </ul>
       <div className="main">
         <Header />
         <Page />

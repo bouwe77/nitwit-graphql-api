@@ -1,14 +1,22 @@
 import gql from "graphql-tag";
 
-const GET_USER = gql`
-  query getUser($username: String!) {
+const GET_PROFILE = gql`
+  query getProfile($username: String!) {
     userByUsername(username: $username) {
       id
       username
-      followingCount
       followerCount
+      followingCount
+      posts {
+        id
+        text
+        timestamp
+        author {
+          username
+        }
+      }
     }
   }
 `;
 
-export { GET_USER };
+export { GET_PROFILE };
