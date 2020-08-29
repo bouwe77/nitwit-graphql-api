@@ -6,7 +6,7 @@ import Post from "../posts/Post";
 export default function Timeline() {
   const { loading, error, data } = useQuery(GET_TIMELINE, {});
 
-  if (loading) return "Loading...";
+  if (loading) return null;
   if (error) return `Error: ${error.message}`;
 
   return (

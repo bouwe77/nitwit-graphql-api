@@ -7,7 +7,7 @@ export default function Profile({ username }) {
     variables: { username },
   });
 
-  if (loading) return "Loading...";
+  if (loading) return null;
   if (error) return `Error: ${error.message}`;
 
   if (!data || !data.userByUsername) return `User ${username} not found`;

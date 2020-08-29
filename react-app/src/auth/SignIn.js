@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useAuth } from "./AuthContext";
 
 export default function SignIn() {
-  const { signIn, isSignedIn } = useAuth();
+  const { signIn, isSignedIn, isLoading } = useAuth();
   const [status, setStatus] = useState("init");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -17,7 +17,7 @@ export default function SignIn() {
     }
   }
 
-  if (isSignedIn) return "Ja, klaar";
+  if (isSignedIn || isLoading) return null;
 
   return (
     <>

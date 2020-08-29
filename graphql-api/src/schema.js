@@ -32,10 +32,15 @@ export const typeDefs = gql`
     id: ID!
     "The name of the User."
     username: String!
+    "The posts this user posted."
     posts(skip: Int, limit: Int): [Post]
+    "The users that are following this user."
     following: [Following]
+    "The number of users that are following this user."
     followingCount: Int!
+    "The users this user is following."
     followers: [Following]
+    "The number of users this user is following."
     followerCount: Int!
   }
 
@@ -54,7 +59,7 @@ export const typeDefs = gql`
     user: User!
   }
 
-  "A LoginResult is the result that is returned by a login when it's successful."
+  "A LoginResult is the result that is returned by a login (mutation) when it's successful."
   type LoginResult {
     "The JWT token to use for subsequent authenticated requests."
     token: String!

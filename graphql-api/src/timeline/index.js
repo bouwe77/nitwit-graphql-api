@@ -13,7 +13,7 @@ async function getTimeline(user, skip, limit) {
 
   const data = await TimelinePost.find({ timelineUserId: user.id })
     .sort({
-      timestamp: "asc",
+      timestamp: "desc",
     })
     .skip(skip)
     .limit(limit);

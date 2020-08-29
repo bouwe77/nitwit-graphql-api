@@ -16,7 +16,7 @@ async function getPosts(authorUserId, skip, limit) {
 
   const data = await Post.find({ authorUserId })
     .sort({
-      timestamp: "asc",
+      timestamp: "desc",
     })
     .skip(skip)
     .limit(limit);
@@ -59,7 +59,8 @@ function validateNewPost(post) {
       presence: true,
       length: {
         minimum: 1,
-        message: "must not be empty",
+        maximum: 140,
+        message: "must be between 1 and 140 characters",
       },
     },
     authorUserId: {
