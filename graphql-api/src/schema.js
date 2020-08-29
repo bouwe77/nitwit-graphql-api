@@ -32,7 +32,7 @@ export const typeDefs = gql`
     id: ID!
     "The name of the User."
     username: String!
-    posts: [Post]
+    posts(skip: Int, limit: Int): [Post]
     following: [Following]
     followingCount: Int!
     followers: [Following]
