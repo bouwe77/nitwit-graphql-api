@@ -39,9 +39,11 @@ async function createPost(post, user, getFollowers, getUsersByUsernames) {
 
   const mentions = extractMentions(post.text);
   const mentionedUsers = await getUsersByUsernames(mentions, false);
-  const mentionedUserIds = mentionedUsers.map((u) => u._id);
+  const mentionedUserIds = mentionedUsers.map((u) => String(u._id));
 
-  const timelineUserIds = [...followerUserIds, ...mentionedUserIds];
+  const timelineUserIds = [
+    ...new Set([...followerUserIds, ...mentionedUserIds]),
+  ];
 
   // const hashtags = extractHashtagsWithIndices(post.text);
   // console.log(hashtags);
