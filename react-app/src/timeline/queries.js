@@ -5,6 +5,7 @@ const GET_TIMELINE = gql`
     timeline {
       id
       text
+      timestamp
       author {
         username
       }

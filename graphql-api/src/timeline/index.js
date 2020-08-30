@@ -1,4 +1,4 @@
-import mapToTimelineSchema from "./mapping";
+import mapToPostSchema from "../posts/mapping";
 import TimelinePost from "./model";
 
 export const createTimelineFunctions = (user) => ({
@@ -18,7 +18,7 @@ async function getTimeline(user, skip, limit) {
     .skip(skip)
     .limit(limit);
 
-  const timeline = data.map(mapToTimelineSchema);
+  const timeline = data.map(mapToPostSchema);
 
   return timeline;
 }

@@ -34,15 +34,15 @@ async function createPost(post, user, getFollowers, getUsersByUsernames) {
 
   validateNewPost(post);
 
-  const followers = await getFollowers(user.id);
-  const followerUserIds = [...followers.map((f) => f.userId), user.id];
-
   const mentions = extractMentions(post.text);
   const mentionedUsers = await getUsersByUsernames(mentions, false);
   const mentionedUserIds = mentionedUsers.map((u) => String(u._id));
 
+  const followers = await getFollowers(user.id);
+  const followerUserIds = [...followers.map((f) => f.userId), user.id];
+
   const timelineUserIds = [
-    ...new Set([...followerUserIds, ...mentionedUserIds]),
+    ...new Set([...mentionedUserIds, ...followerUserIds]),
   ];
 
   // const hashtags = extractHashtagsWithIndices(post.text);
@@ -54,15 +54,17 @@ async function createPost(post, user, getFollowers, getUsersByUsernames) {
 }
 
 function validateNewPost(post) {
-  const postConstraints = {
-    text: {
-      presence: true,
-      length: {
-        minimum: 1,
-        maximum: 140,
-        message: "must be between 1 and 140 characters",
-      },
+  const textConstraint = {
+    presence: true,
+    length: {
+      minimum: 1,
+      maximum: 140,
+      message: "must be between 1 and 140 characters",
     },
+  };
+
+  const postConstraints = {
+    text: textConstraint,
     authorUserId: {
       presence: true,
       length: {

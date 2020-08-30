@@ -119,7 +119,7 @@ const userConstraints = {
       message: "must be between 1 and 100 characters",
     },
     format: {
-      pattern: "^[0-9a-zA-Z]$",
+      pattern: "^[0-9a-zA-Z].*$",
       message: "can have alphanumeric characters only",
     },
   },

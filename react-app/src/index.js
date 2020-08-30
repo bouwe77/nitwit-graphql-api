@@ -5,6 +5,10 @@ import "./styles.css";
 import { ApolloProvider } from "@apollo/react-hooks";
 import getClient from "./apolloClient";
 import { AuthProvider } from "./auth/AuthContext";
+import JavascriptTimeAgo from "javascript-time-ago";
+import en from "javascript-time-ago/locale/en";
+
+JavascriptTimeAgo.addLocale(en);
 
 const client = getClient();
 

@@ -38,6 +38,7 @@ async function getFollowers(userId, skip, limit) {
   const data = await Follower.find({ followingUserId: userId })
     .skip(skip)
     .limit(limit);
+
   const followers = data.map((f) => mapToFollowerSchema(f, false));
 
   return followers;

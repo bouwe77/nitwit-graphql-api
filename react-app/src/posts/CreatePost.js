@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { CREATE_POST } from "./mutations";
 import { useMutation } from "@apollo/react-hooks";
 
-export default function CreatePost({ onSuccess }) {
+export default function CreatePost({ initialText, onSuccess }) {
   const [text, setText] = useState("");
+
+  useEffect(() => {
+    setText(initialText);
+  }, [initialText]);
 
   const [createPost, { loading, error }] = useMutation(CREATE_POST);
 
@@ -26,7 +30,7 @@ export default function CreatePost({ onSuccess }) {
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <textarea value={text} onChange={handleChange} />
+        <textarea value={text} onChange={handleChange} autoFocus />
         <button>OK</button>
       </form>
     </>

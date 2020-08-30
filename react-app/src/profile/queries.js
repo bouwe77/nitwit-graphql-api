@@ -19,4 +19,26 @@ const GET_PROFILE = gql`
   }
 `;
 
-export { GET_PROFILE };
+const GET_FOLLOWING = gql`
+  query getFollowing($userId: String!) {
+    following(userId: $userId) {
+      user {
+        id
+        username
+      }
+    }
+  }
+`;
+
+const GET_FOLLOWERS = gql`
+  query getFollowers($userId: String!) {
+    followers(userId: $userId) {
+      user {
+        id
+        username
+      }
+    }
+  }
+`;
+
+export { GET_PROFILE, GET_FOLLOWING, GET_FOLLOWERS };
