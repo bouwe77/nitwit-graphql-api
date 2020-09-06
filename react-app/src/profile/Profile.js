@@ -10,7 +10,7 @@ import Following from "./Following";
 import { FollowOrUnfollow } from "./FollowOrUnfollow";
 
 export default function Profile({ username }) {
-  const { isSignedIn, user } = useAuth();
+  const { user } = useAuth();
   const [showModal, setShowModal] = useState(false);
 
   const { loading, error, data } = useQuery(GET_PROFILE, {
@@ -22,19 +22,20 @@ export default function Profile({ username }) {
   if (!data.userByUsername) return "User not found";
 
   let alreadyFollowing =
+    user &&
     user.username !== username &&
     data.userByUsername.followers.some((f) => f.user.id === user.id);
 
   return (
     <>
       <button
-        hidden={!isSignedIn || user.username !== username}
+        hidden={!user || user?.username !== username}
         onClick={() => setShowModal(true)}
       >
         Create Post
       </button>
 
-      {user.username !== username && (
+      {user && user.username !== username && (
         <FollowOrUnfollow
           userId={data.userByUsername.id}
           alreadyFollowing={alreadyFollowing}

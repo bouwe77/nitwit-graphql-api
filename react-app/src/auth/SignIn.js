@@ -7,12 +7,12 @@ export default function SignIn() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  async function handleSubmit() {
+  async function handleSubmit(event) {
+    event.preventDefault();
     try {
       await signIn(username, password);
       setStatus("success");
     } catch (error) {
-      //alert(error);
       setStatus("error");
     }
   }
@@ -21,9 +21,7 @@ export default function SignIn() {
 
   return (
     <>
-      {status === "error" && <div>Error...</div>}
-
-      {status === "success" && <div>Success!!!</div>}
+      {status === "error" && <div>Username and/or password incorrect</div>}
 
       <form onSubmit={handleSubmit}>
         Username{" "}

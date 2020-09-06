@@ -46,36 +46,25 @@ async function getMe() {
   }
 }
 
-// async function authenticate(username, password) {
-//   try {
-//     const client = getClient();
+async function authenticate(username, password) {
+  try {
+    const client = getClient();
 
-//     const result = await client.mutate({
-//       mutation: gql`
-//         mutation {
-//           login(username: "bouwe", password: "password") {
-//             token
-//           }
-//         }
-//       `,
-//     });
-//     return result?.data?.login?.token;
-//   } catch (error) {
-//     console.error(error);
-//     //throw new Error("Unauthorized");
-//     throw error;
-//   }
-// }
-
-function authenticate(username, password) {
-  const actualPassword = "password";
-
-  if (password !== actualPassword) throw new Error("Unauthorized");
-
-  if (username === "bouwe")
-    return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNWYyMDhmZTZjZjU3ZDA1NGZhYTJiZmVhIiwidXNlcm5hbWUiOiJib3V3ZSJ9LCJpYXQiOjE1OTg0NjkzMjgsImV4cCI6MTYzMDAyNjkyOH0.wa2HmEf87kxs-zczVHOQ1bryoxYjGpeZlhgln64PE9U";
-
-  throw new Error("Unauthorized");
+    const result = await client.mutate({
+      mutation: gql`
+        mutation Authenticate($username: String!, $password: String!) {
+          login(username: $username, password: $password) {
+            token
+          }
+        }
+      `,
+      variables: { username, password },
+    });
+    return result?.data?.login?.token;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
 
 export { signIn, signOut, getMe };
