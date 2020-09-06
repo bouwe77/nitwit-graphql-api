@@ -6,6 +6,11 @@ const GET_PROFILE = gql`
       id
       username
       followerCount
+      followers {
+        user {
+          id
+        }
+      }
       followingCount
       posts {
         id
@@ -41,4 +46,20 @@ const GET_FOLLOWERS = gql`
   }
 `;
 
-export { GET_PROFILE, GET_FOLLOWING, GET_FOLLOWERS };
+const FOLLOW = gql`
+  mutation follow($userId: String!) {
+    follow(userId: $userId) {
+      success
+    }
+  }
+`;
+
+const UNFOLLOW = gql`
+  mutation unfollow($userId: String!) {
+    unfollow(userId: $userId) {
+      success
+    }
+  }
+`;
+
+export { GET_PROFILE, GET_FOLLOWING, GET_FOLLOWERS, FOLLOW, UNFOLLOW };

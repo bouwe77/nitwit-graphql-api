@@ -2,10 +2,6 @@ import jwt from "jsonwebtoken";
 import { createSignedToken } from "./jwt";
 import { async } from "validate.js";
 
-//======================================================================================
-//TODO Profielfoto als externe URL?
-//======================================================================================
-
 export const resolvers = {
   Query: {
     users: async (_, { skip, limit }, { users: { getUsers } }) => {

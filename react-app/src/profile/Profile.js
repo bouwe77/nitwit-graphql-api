@@ -7,9 +7,10 @@ import CreatePostModal from "../posts/CreatePostModal";
 import { useAuth } from "../auth/AuthContext";
 import Followers from "./Followers";
 import Following from "./Following";
+import { FollowOrUnfollow } from "./FollowOrUnfollow";
 
 export default function Profile({ username }) {
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, user } = useAuth();
   const [showModal, setShowModal] = useState(false);
 
   const { loading, error, data } = useQuery(GET_PROFILE, {
@@ -18,15 +19,32 @@ export default function Profile({ username }) {
 
   if (loading) return null;
   if (error) return `Error: ${error.message}`;
+  if (!data.userByUsername) return "User not found";
+
+  let alreadyFollowing =
+    user.username !== username &&
+    data.userByUsername.followers.some((f) => f.user.id === user.id);
 
   return (
     <>
-      <button hidden={!isSignedIn} onClick={() => setShowModal(true)}>
+      <button
+        hidden={!isSignedIn || user.username !== username}
+        onClick={() => setShowModal(true)}
+      >
         Create Post
       </button>
-      <User user={data.userByUsername} />
+
+      {user.username !== username && (
+        <FollowOrUnfollow
+          userId={data.userByUsername.id}
+          alreadyFollowing={alreadyFollowing}
+        />
+      )}
+
       <Followers userId={data.userByUsername.id} />
       <Following userId={data.userByUsername.id} />
+
+      <User user={data.userByUsername} />
       <Posts posts={data.userByUsername.posts} />
       <CreatePostModal
         show={showModal}
