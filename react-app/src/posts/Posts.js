@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import Post from "./Post";
 import CreatePostModal from "./CreatePostModal";
-import { useAuth } from "../auth/AuthContext";
 import twitter from "twitter-text";
 
 export default function Posts({ posts }) {
-  const { user } = useAuth();
   const [text, setText] = useState("");
   const [showModal, setShowModal] = useState(false);
 
@@ -14,9 +12,9 @@ export default function Posts({ posts }) {
     setShowModal(true);
   }
 
-  function reply(originalText) {
+  function reply(originalText, authorUsername) {
     let mentions = twitter.extractMentions(originalText);
-    mentions = [user.username, ...mentions];
+    mentions = [authorUsername, ...mentions];
     mentions = [...new Set([...mentions])];
     const text = mentions.map((m) => "@" + m).join(" ") + " ";
     setText(text);

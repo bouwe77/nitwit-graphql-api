@@ -1,17 +1,15 @@
 import React, { useState } from "react";
-import User from "./User";
-import Posts from "../posts/Posts";
+import ProfilePosts from "./ProfilePosts";
 import { GET_PROFILE } from "./queries";
 import { useQuery } from "@apollo/react-hooks";
-import CreatePostModal from "../posts/CreatePostModal";
-import { useAuth } from "../auth/AuthContext";
 import Followers from "./Followers";
 import Following from "./Following";
 import { FollowOrUnfollow } from "./FollowOrUnfollow";
+import { useAuth } from "../auth/AuthContext";
 
 export default function Profile({ username }) {
-  const { user } = useAuth();
-  const [showModal, setShowModal] = useState(false);
+  const { user: signedInUser } = useAuth();
+  const [tab, setTab] = useState("posts");
 
   const { loading, error, data } = useQuery(GET_PROFILE, {
     variables: { username },
@@ -22,35 +20,33 @@ export default function Profile({ username }) {
   if (!data.userByUsername) return "User not found";
 
   let alreadyFollowing =
-    user &&
-    user.username !== username &&
-    data.userByUsername.followers.some((f) => f.user.id === user.id);
+    signedInUser &&
+    signedInUser.username !== data.userByUsername.username &&
+    data.userByUsername.followers.some((f) => f.user.id === signedInUser.id);
 
   return (
     <>
-      <button
-        hidden={!user || user?.username !== username}
-        onClick={() => setShowModal(true)}
-      >
-        Create Post
-      </button>
+      <h1>{data.userByUsername.username}</h1>
+      <div>{data.userByUsername.followerCount} followers</div>
+      <div>{data.userByUsername.followingCount} following</div>
 
-      {user && user.username !== username && (
-        <FollowOrUnfollow
-          userId={data.userByUsername.id}
-          alreadyFollowing={alreadyFollowing}
-        />
-      )}
+      {signedInUser &&
+        signedInUser.username !== data.userByUsername.username && (
+          <FollowOrUnfollow
+            userId={data.userByUsername.id}
+            alreadyFollowing={alreadyFollowing}
+          />
+        )}
 
-      <Followers userId={data.userByUsername.id} />
-      <Following userId={data.userByUsername.id} />
+      <button onClick={() => setTab("posts")}>Profile</button>
+      <button onClick={() => setTab("followers")}>Followers</button>
+      <button onClick={() => setTab("following")}>Following</button>
 
-      <User user={data.userByUsername} />
-      <Posts posts={data.userByUsername.posts} />
-      <CreatePostModal
-        show={showModal}
-        handleClose={() => setShowModal(false)}
-      />
+      {tab === "posts" && <ProfilePosts user={data.userByUsername} />}
+
+      {tab === "followers" && <Followers userId={data.userByUsername.id} />}
+
+      {tab === "following" && <Following userId={data.userByUsername.id} />}
     </>
   );
 }

@@ -19,7 +19,6 @@ ReactDOM.render(
         <App />
       </ApolloProvider>
     </AuthProvider>
-    ,
   </React.StrictMode>,
   document.getElementById("root")
 );

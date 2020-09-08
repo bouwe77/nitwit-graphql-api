@@ -17,8 +17,8 @@ export default function CreatePost({ initialText, onSuccess }) {
   function handleSubmit(event) {
     event.preventDefault();
     createPost({ variables: { text } });
-    setText("");
     if (onSuccess) onSuccess();
+    setText("");
   }
 
   function handleChange(event) {
@@ -27,11 +27,15 @@ export default function CreatePost({ initialText, onSuccess }) {
     setText(text);
   }
 
+  const disabled = !text || text.length < 1;
+
   return (
     <>
       <form onSubmit={handleSubmit}>
         <textarea value={text} onChange={handleChange} autoFocus />
-        <button>OK</button>
+        <button type="submit" disabled={disabled}>
+          OK
+        </button>
       </form>
     </>
   );

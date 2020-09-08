@@ -12,23 +12,24 @@ export default function Post({ post, retweet, reply }) {
   // mentions = [...new Set([...mentions])];
 
   return (
-    <>
-      <div className="post">
-        <a href={`/${post.author.username}`}>@{post.author.username}</a>{" "}
-        <ReactTimeAgo date={Date.parse(post.timestamp)} timeStyle="twitter" />
-        <br />
-        {text}
-        <br />
-        <button
-          disabled={!isSignedIn}
-          onClick={() => retweet(post.text, post.author.username)}
-        >
-          Retweet
-        </button>{" "}
-        <button disabled={!isSignedIn} onClick={() => reply(post.text)}>
-          Reply
-        </button>
-      </div>
-    </>
+    <div className="post">
+      <a href={`/${post.author.username}`}>@{post.author.username}</a>{" "}
+      <ReactTimeAgo date={Date.parse(post.timestamp)} timeStyle="twitter" />
+      <br />
+      {text}
+      <br />
+      <button
+        disabled={!isSignedIn}
+        onClick={() => retweet(post.text, post.author.username)}
+      >
+        Retweet
+      </button>{" "}
+      <button
+        disabled={!isSignedIn}
+        onClick={() => reply(post.text, post.author.username)}
+      >
+        Reply
+      </button>
+    </div>
   );
 }
