@@ -5,6 +5,8 @@ const GET_PROFILE = gql`
     userByUsername(username: $username) {
       id
       username
+      name
+      bio
       followerCount
       followers {
         user {
@@ -17,6 +19,7 @@ const GET_PROFILE = gql`
         text
         timestamp
         author {
+          name
           username
         }
       }
@@ -30,6 +33,9 @@ const GET_FOLLOWING = gql`
       user {
         id
         username
+        name
+        followerCount
+        followingCount
       }
     }
   }
@@ -41,6 +47,9 @@ const GET_FOLLOWERS = gql`
       user {
         id
         username
+        name
+        followerCount
+        followingCount
       }
     }
   }

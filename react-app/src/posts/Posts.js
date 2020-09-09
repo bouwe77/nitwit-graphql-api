@@ -22,7 +22,7 @@ export default function Posts({ posts }) {
   }
 
   return (
-    <>
+    <div className="posts">
       {posts.map((post) => (
         <Post key={post.id} post={post} retweet={retweet} reply={reply} />
       ))}
@@ -32,6 +32,6 @@ export default function Posts({ posts }) {
         handleClose={() => setShowModal(false)}
         text={text}
       />
-    </>
+    </div>
   );
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import ReactTimeAgo from "react-time-ago";
+import TimeAgo from "react-time-ago";
 import { useAuth } from "../auth/AuthContext";
 //import twitter from "twitter-text";
 
@@ -13,22 +13,26 @@ export default function Post({ post, retweet, reply }) {
 
   return (
     <div className="post">
-      <a href={`/${post.author.username}`}>@{post.author.username}</a>{" "}
-      <ReactTimeAgo date={Date.parse(post.timestamp)} timeStyle="twitter" />
-      <br />
-      {text}
-      <br />
+      {post.author.name}{" "}
+      <a href={`/${post.author.username}`} className="usernameLink">
+        @{post.author.username}
+      </a>{" "}
+      - <TimeAgo date={Date.parse(post.timestamp)} timeStyle="twitter" />
+      <div className="text">{text}</div>
       <button
         disabled={!isSignedIn}
         onClick={() => retweet(post.text, post.author.username)}
+        className="buttonLink"
+        style={{ paddingRight: "10px" }}
       >
-        Retweet
+        retweet
       </button>{" "}
       <button
         disabled={!isSignedIn}
         onClick={() => reply(post.text, post.author.username)}
+        className="buttonLink"
       >
-        Reply
+        reply
       </button>
     </div>
   );

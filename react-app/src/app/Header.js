@@ -6,14 +6,18 @@ export default function Header() {
 
   return (
     <div className="header">
-      <div className="headerLogo">
+      <div className="headerLogoContainer">
         <a href="/">
-          <img src="/nitwit-logo.jpeg" alt="nitwit" />
+          <img src="/nitwit-logo.jpeg" alt="nitwit" className="logo" />
         </a>
       </div>
 
       <div className="headerButtons">
-        {isSignedIn && <button onClick={signOut}>Sign Out</button>}
+        {isSignedIn && (
+          <button className="buttonNavLink" onClick={signOut}>
+            Sign Out
+          </button>
+        )}
       </div>
     </div>
   );

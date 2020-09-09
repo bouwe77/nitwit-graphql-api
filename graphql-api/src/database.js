@@ -26,6 +26,9 @@ db.once("open", () => {
   // Workaround: To prevent the dreaded "Cannot create namespace in multi-document transaction" error
   // when inserting documents in a transaction to a collection that does not yet exist,
   // the collectiona are created here just to be sure.
+  //
+  // IMPORTANT: The server needs to be RESTARTED before a new connection is made and the collections are created!!!
+  //
   mongoose.connection.createCollection(POSTS);
   mongoose.connection.createCollection(TIMELINEPOSTS);
   mongoose.connection.createCollection(USERS);

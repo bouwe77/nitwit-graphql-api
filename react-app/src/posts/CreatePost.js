@@ -30,13 +30,26 @@ export default function CreatePost({ initialText, onSuccess }) {
   const disabled = !text || text.length < 1;
 
   return (
-    <>
+    <div className="createPostFormContainer">
       <form onSubmit={handleSubmit}>
-        <textarea value={text} onChange={handleChange} autoFocus />
-        <button type="submit" disabled={disabled}>
-          OK
-        </button>
+        <div className="createPostFormRow">
+          <textarea
+            value={text}
+            onChange={handleChange}
+            autoFocus
+            className="createPostInput"
+          />
+        </div>
+        <div>
+          <button
+            type="submit"
+            disabled={disabled}
+            className="submitPostButton"
+          >
+            OK
+          </button>
+        </div>
       </form>
-    </>
+    </div>
   );
 }

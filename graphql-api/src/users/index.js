@@ -110,36 +110,51 @@ async function authenticateUser(username, password) {
   return user;
 }
 
-const userConstraints = {
-  username: {
-    presence: true,
-    length: {
-      minimum: 1,
-      maximum: 100,
-      message: "must be between 1 and 100 characters",
+function getNewUserConstraints() {
+  return {
+    username: {
+      presence: true,
+      length: {
+        minimum: 1,
+        maximum: 100,
+        message: "must be between 1 and 100 characters",
+      },
+      format: {
+        pattern: "^[0-9a-zA-Z].*$",
+        message: "can have alphanumeric characters only",
+      },
     },
-    format: {
-      pattern: "^[0-9a-zA-Z].*$",
-      message: "can have alphanumeric characters only",
+    password: {
+      presence: true,
+      length: {
+        minimum: 6,
+        maximum: 100,
+        message: "must be between 6 and 100 characters",
+      },
     },
-  },
-  password: {
-    presence: true,
-    length: {
-      minimum: 6,
-      maximum: 100,
-      message: "must be between 6 and 100 characters",
+    name: {
+      presence: true,
+      length: {
+        minimum: 1,
+        maximum: 100,
+        message: "must be between 1 and 100 characters",
+      },
     },
-  },
-};
+  };
+}
+
+function getAuthenticateUserConstraints() {
+  let { username, password } = getNewUserConstraints();
+  const authenticateUserConstraints = { username, password };
+  return authenticateUserConstraints;
+}
 
 function validateNewUser(user) {
-  const errors = validate(user, userConstraints, { format: "flat" });
+  const errors = validate(user, getNewUserConstraints(), { format: "flat" });
   if (errors) throw new Error(errors.join(", "));
 }
 
 function isAuthenticationValid(user) {
-  // Note that (for now) the validation constraints are the same as when registering a new user.
-  const errors = validate(user, userConstraints);
+  const errors = validate(user, getAuthenticateUserConstraints());
   return errors ? false : true;
 }

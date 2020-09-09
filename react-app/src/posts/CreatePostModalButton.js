@@ -5,8 +5,10 @@ export default function CreatePostModalButton({ onSuccess }) {
   const [showModal, setShowModal] = useState(false);
 
   return (
-    <>
-      <button onClick={() => setShowModal(true)}>Create Post</button>
+    <div className="createPostButtonContainer">
+      <button onClick={() => setShowModal(true)} className="createPostButton">
+        Create Post
+      </button>
       <CreatePostModal
         show={showModal}
         handleClose={() => {
@@ -14,6 +16,6 @@ export default function CreatePostModalButton({ onSuccess }) {
           if (onSuccess) onSuccess();
         }}
       />
-    </>
+    </div>
   );
 }

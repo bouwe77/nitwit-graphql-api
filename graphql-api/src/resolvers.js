@@ -71,8 +71,12 @@ export const resolvers = {
     },
   },
   Mutation: {
-    register: async (_, { username, password }, { users: { createUser } }) => {
-      return await createUser({ username, password });
+    register: async (
+      _,
+      { username, password, name, bio },
+      { users: { createUser } }
+    ) => {
+      return await createUser({ username, password, name, bio });
     },
     login: async (
       _,

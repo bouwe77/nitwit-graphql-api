@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import ProfilePosts from "./ProfilePosts";
+import Posts from "../posts/Posts";
 import { GET_PROFILE } from "./queries";
 import { useQuery } from "@apollo/react-hooks";
 import Followers from "./Followers";
 import Following from "./Following";
 import { FollowOrUnfollow } from "./FollowOrUnfollow";
 import { useAuth } from "../auth/AuthContext";
+import CreatePostModalButton from "../posts/CreatePostModalButton";
 
 export default function Profile({ username }) {
   const { user: signedInUser } = useAuth();
@@ -24,29 +25,60 @@ export default function Profile({ username }) {
     signedInUser.username !== data.userByUsername.username &&
     data.userByUsername.followers.some((f) => f.user.id === signedInUser.id);
 
+  const { userByUsername: user } = data;
+
   return (
     <>
-      <h1>{data.userByUsername.username}</h1>
-      <div>{data.userByUsername.followerCount} followers</div>
-      <div>{data.userByUsername.followingCount} following</div>
+      <h1>
+        {user.name} - @{user.username}
+      </h1>
+      <div>
+        <div style={{ display: "flex" }}>
+          <div>{user.bio}</div>
+          <div>
+            {signedInUser && signedInUser.username === user.username && (
+              <CreatePostModalButton />
+            )}
+          </div>
+        </div>
+        <div>
+          {user.followerCount} followers - {user.followingCount} following
+        </div>
+      </div>
 
-      {signedInUser &&
-        signedInUser.username !== data.userByUsername.username && (
-          <FollowOrUnfollow
-            userId={data.userByUsername.id}
-            alreadyFollowing={alreadyFollowing}
-          />
-        )}
+      {signedInUser && signedInUser.username !== user.username && (
+        <FollowOrUnfollow
+          userId={user.id}
+          alreadyFollowing={alreadyFollowing}
+        />
+      )}
 
-      <button onClick={() => setTab("posts")}>Profile</button>
-      <button onClick={() => setTab("followers")}>Followers</button>
-      <button onClick={() => setTab("following")}>Following</button>
+      <div className="tabs">
+        <button
+          onClick={() => setTab("posts")}
+          className={`buttonNavLink tab ${tab === "posts" ? "active" : ""}`}
+        >
+          Profile
+        </button>
+        <button
+          onClick={() => setTab("followers")}
+          className={`buttonNavLink tab ${tab === "followers" ? "active" : ""}`}
+        >
+          Followers
+        </button>
+        <button
+          onClick={() => setTab("following")}
+          className={`buttonNavLink tab ${tab === "following" ? "active" : ""}`}
+        >
+          Following
+        </button>
+      </div>
 
-      {tab === "posts" && <ProfilePosts user={data.userByUsername} />}
+      {tab === "posts" && <Posts posts={data.userByUsername.posts} />}
 
-      {tab === "followers" && <Followers userId={data.userByUsername.id} />}
+      {tab === "followers" && <Followers userId={user.id} />}
 
-      {tab === "following" && <Following userId={data.userByUsername.id} />}
+      {tab === "following" && <Following userId={user.id} />}
     </>
   );
 }

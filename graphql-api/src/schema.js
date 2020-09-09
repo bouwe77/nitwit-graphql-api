@@ -30,8 +30,12 @@ export const typeDefs = gql`
   "A User is someone who is registered for the Nitwit app."
   type User {
     id: ID!
-    "The name of the User."
+    "The username of the user."
     username: String!
+    "The name of the user."
+    name: String!
+    "The bio of the user."
+    bio: String!
     "The posts this user posted."
     posts(skip: Int, limit: Int): [Post]
     "The users that are following this user."
@@ -76,8 +80,13 @@ export const typeDefs = gql`
   }
 
   type Mutation {
-    "Register a new user with the given username and password."
-    register(username: String!, password: String!): User!
+    "Register a new user."
+    register(
+      username: String!
+      name: String!
+      password: String!
+      bio: String
+    ): User!
 
     "Login with the given username and password."
     login(username: String!, password: String!): LoginResult!

@@ -8,6 +8,7 @@ const GET_TIMELINE = gql`
       timestamp
       author {
         username
+        name
       }
     }
   }

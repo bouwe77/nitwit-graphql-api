@@ -11,7 +11,7 @@ export default ({ handleClose, show, children }) => {
             x
           </button>
         </div>
-        {children}
+        <div className="modal-content">{children}</div>
       </section>
     </div>
   );
