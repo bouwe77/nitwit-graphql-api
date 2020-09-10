@@ -13,5 +13,13 @@ export default function Following({ userId }) {
 
   const users = data?.following?.map((f) => f.user);
 
+  if (users.length === 0)
+    return (
+      <>
+        <br />
+        Not yet following anyone...
+      </>
+    );
+
   return <FollowList users={users} />;
 }

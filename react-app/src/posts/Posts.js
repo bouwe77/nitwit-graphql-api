@@ -21,6 +21,14 @@ export default function Posts({ posts }) {
     setShowModal(true);
   }
 
+  if (posts.length === 0)
+    return (
+      <>
+        <br />
+        No posts yet...
+      </>
+    );
+
   return (
     <div className="posts">
       {posts.map((post) => (

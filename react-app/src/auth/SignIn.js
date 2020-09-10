@@ -19,18 +19,28 @@ export default function SignIn() {
 
   if (isSignedIn || isLoading) return null;
 
+  const disabled =
+    !username || username.length < 1 || !password || password.length < 1;
+
   return (
     <>
       {status === "error" && <div>Username and/or password incorrect</div>}
-
+      <br />
+      <br />
       <form onSubmit={handleSubmit}>
-        Username{" "}
+        Username
+        <br />
         <input type="text" onChange={(e) => setUsername(e.target.value)} />
         <br />
-        Password{" "}
+        <br />
+        Password
+        <br />
         <input type="password" onChange={(e) => setPassword(e.target.value)} />
         <br />
-        <button type="submit">Sign In</button>
+        <br />
+        <button type="submit" disabled={disabled} className="signInButton">
+          Sign In
+        </button>
       </form>
     </>
   );

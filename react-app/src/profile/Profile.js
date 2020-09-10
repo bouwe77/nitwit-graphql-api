@@ -74,7 +74,7 @@ export default function Profile({ username }) {
         </button>
       </div>
 
-      {tab === "posts" && <Posts posts={data.userByUsername.posts} />}
+      {tab === "posts" && <Posts posts={user.posts} />}
 
       {tab === "followers" && <Followers userId={user.id} />}
 

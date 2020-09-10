@@ -5,7 +5,7 @@ export default function mapToUserSchema(userModel) {
     id: userModel._id,
     username: userModel.username,
     name: userModel.name,
-    bio: userModel.bio,
+    bio: userModel.bio ?? "",
     followerCount: userModel.followerCount ?? 0,
     followingCount: userModel.followingCount ?? 0,
   };
