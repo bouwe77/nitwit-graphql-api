@@ -8,7 +8,7 @@
   "author": "Bouwe",
   "license": "ISC",
   "dependencies": {
-    "apollo-server": "^2.16.0",
+    "apollo-server": "^2.25.4",
     "bcrypt": "^5.0.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
